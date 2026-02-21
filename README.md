@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./img.png" alt="Salon Connect Banner" width="100%">
+  
 </p>
 
 # Salon Connect 💇‍♀️✨
@@ -11,12 +11,11 @@ Genisis
 
 ### Team Members
 
-* Greeshma A – CE Kalloopara
-* Member 2 – CE Kalloopara
+* Greeshma Anilkumar – CE Kalloopara
+* Amrutha Sivani – CE Kalloopara
 
 ### Hosted Project Link
-
-[Add your GitHub / APK / Hosted Link here]
+https://drive.google.com/file/d/1_VmcrRv8ZZ4mcVJAq4s8UDciy7QSQJVm/view?usp=drivesdk
 
 ---
 
@@ -92,14 +91,15 @@ flutter run
 # Project Documentation
 
 ## Screenshots
+<img width="714" height="1599" alt="image" src="https://github.com/user-attachments/assets/dbd6375a-f6fe-4a0a-9f16-632351e50a4a" />
 
-![Screenshot1](screenshots/home.png)
 *Customer home screen showing available salons*
 
-![Screenshot2](screenshots/booking.png)
+<img width="714" height="1599" alt="image" src="https://github.com/user-attachments/assets/26926c3c-1096-438e-af7b-19c33b6f2f75" />
+
 *Booking interface with date & time selection*
 
-![Screenshot3](screenshots/admin.png)
+<img width="714" height="1599" alt="image" src="https://github.com/user-attachments/assets/2ec70a18-5a24-4b35-84e2-9e7caa37369b" />
 *Admin dashboard with analytics overview*
 
 ---
@@ -139,8 +139,7 @@ User Flow:
 ## For Mobile Apps:
 
 ### App Flow Diagram
-
-![App Flow](docs/app-flow.png)
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/68850063-9a71-4a3b-86c8-7fdf169d527d" />
 
 * Login → Dashboard
 * Customer: Browse → Book → History → Suggestions
