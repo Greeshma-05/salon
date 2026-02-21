@@ -130,7 +130,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '\$${widget.appointment.totalPrice.toStringAsFixed(2)}',
+                  '₹${widget.appointment.totalPrice.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -404,7 +404,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     children: [
                       const Text('Amount:'),
                       Text(
-                        '\$${widget.appointment.totalPrice.toStringAsFixed(2)}',
+                        '₹${widget.appointment.totalPrice.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

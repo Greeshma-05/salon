@@ -6,7 +6,6 @@ import '../../models/stylist.dart';
 import '../../services/admin_service.dart';
 import '../../services/stylist_service.dart';
 import '../../services/pricing_service.dart';
-import '../../widgets/dynamic_price_display.dart';
 import 'booking_screen.dart';
 
 class SalonDetailScreen extends StatefulWidget {

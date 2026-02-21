@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../services/notification_settings_service.dart';
+import '../../services/location_service.dart';
 import 'treatment_history_screen.dart';
-import 'find_nearby_salons_screen.dart';
 import 'my_bookings_screen.dart';
 import 'payment_history_screen.dart';
-import 'loyalty_points_screen.dart';
+import 'notification_settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -138,28 +140,38 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.stars, color: Colors.amber),
-                title: const Text('Loyalty Points'),
-                subtitle: Text('${user.loyaltyPoints} points'),
+                leading: const Icon(Icons.location_on),
+                title: const Text('Find My Location'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoyaltyPointsScreen(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.location_searching),
-                title: const Text('Find Nearby Salons'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const FindNearbySalonsScreen(),
-                    ),
-                  );
+                onTap: () async {
+                  final locationService = LocationService();
+                  try {
+                    final position = await locationService.getCurrentLocation();
+                    if (context.mounted && position != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Location: ${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)}',
+                          ),
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                    } else if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Unable to get location. Please enable location access.',
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                    }
+                  }
                 },
               ),
               ListTile(
@@ -177,12 +189,22 @@ class ProfileScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.notifications),
                 title: const Text('Notifications'),
-                trailing: Switch(
-                  value: true,
-                  onChanged: (value) {
-                    // TODO: Implement notifications toggle
+                subtitle: Consumer<NotificationSettingsService>(
+                  builder: (context, notificationService, _) {
+                    return Text(
+                      notificationService.enabledRemindersSummary,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    );
                   },
                 ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationSettingsScreen(),
+                    ),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.dark_mode),
@@ -199,11 +221,23 @@ class ProfileScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.language),
                 title: const Text('Language'),
-                subtitle: const Text('English'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // TODO: Implement language selection
-                },
+                trailing: Consumer<LanguageProvider>(
+                  builder: (context, languageProvider, _) {
+                    return DropdownButton<String>(
+                      value: languageProvider.locale.languageCode,
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(value: 'en', child: Text('English')),
+                        DropdownMenuItem(value: 'ml', child: Text('Malayalam')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          languageProvider.setLanguage(value);
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
             ]),
 

@@ -17,6 +17,7 @@ class AppointmentModel {
   final String
   status; // 'pending', 'confirmed', 'in-progress', 'completed', 'cancelled', 'no-show'
   final String paymentStatus; // 'pending', 'paid', 'refunded', 'failed'
+  final String approvalStatus; // 'pending', 'approved', 'rejected'
   final String? notes;
   final String? cancellationReason;
   final DateTime createdAt;
@@ -40,6 +41,7 @@ class AppointmentModel {
     required this.totalPrice,
     this.paymentStatus = 'pending',
     this.status = 'pending',
+    this.approvalStatus = 'pending',
     this.notes,
     this.cancellationReason,
     required this.createdAt,
@@ -65,6 +67,7 @@ class AppointmentModel {
       'paymentStatus': paymentStatus,
       'totalPrice': totalPrice,
       'status': status,
+      'approvalStatus': approvalStatus,
       'notes': notes,
       'cancellationReason': cancellationReason,
       'createdAt': createdAt.toIso8601String(),
@@ -94,6 +97,7 @@ class AppointmentModel {
       paymentStatus: map['paymentStatus'] ?? 'pending',
       totalPrice: (map['totalPrice'] ?? 0).toDouble(),
       status: map['status'] ?? 'pending',
+      approvalStatus: map['approvalStatus'] ?? 'pending',
       notes: map['notes'],
       cancellationReason: map['cancellationReason'],
       createdAt: map['createdAt'] != null
@@ -124,6 +128,7 @@ class AppointmentModel {
     String? paymentStatus,
     double? totalPrice,
     String? status,
+    String? approvalStatus,
     String? notes,
     String? cancellationReason,
     DateTime? createdAt,
@@ -147,6 +152,7 @@ class AppointmentModel {
       duration: duration ?? this.duration,
       totalPrice: totalPrice ?? this.totalPrice,
       status: status ?? this.status,
+      approvalStatus: approvalStatus ?? this.approvalStatus,
       notes: notes ?? this.notes,
       cancellationReason: cancellationReason ?? this.cancellationReason,
       createdAt: createdAt ?? this.createdAt,

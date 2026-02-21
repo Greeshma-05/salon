@@ -62,9 +62,9 @@ class Service extends HiveObject {
     }
   }
 
-  // Format price as currency
+  // Format price as currency (Indian Rupees)
   String get formattedPrice {
-    return '\$${price.toStringAsFixed(2)}';
+    return '₹${price.toStringAsFixed(2)}';
   }
 
   @override

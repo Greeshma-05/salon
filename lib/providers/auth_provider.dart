@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import '../services/auth_service.dart';
-import '../services/random_data_generator.dart';
 import '../models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {

@@ -79,7 +79,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                         child: _buildSummaryCard(
                           context,
                           'Total Paid',
-                          '\$${totalPaid.toStringAsFixed(2)}',
+                          '₹${totalPaid.toStringAsFixed(2)}',
                           Colors.green,
                           Icons.check_circle,
                         ),
@@ -89,7 +89,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                         child: _buildSummaryCard(
                           context,
                           'Total Unpaid',
-                          '\$${totalUnpaid.toStringAsFixed(2)}',
+                          '₹${totalUnpaid.toStringAsFixed(2)}',
                           Colors.orange,
                           Icons.pending,
                         ),
@@ -289,7 +289,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '\$${booking.totalPrice.toStringAsFixed(2)}',
+                  '₹${booking.totalPrice.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

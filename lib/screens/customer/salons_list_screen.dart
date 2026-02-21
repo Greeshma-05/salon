@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/salon_model.dart';
 import '../../services/admin_service.dart';
+import '../../services/location_service.dart';
 import 'salon_detail_screen.dart';
+import 'nearby_salons_widget.dart';
 
 class SalonsListScreen extends StatefulWidget {
   const SalonsListScreen({super.key});
@@ -14,7 +16,6 @@ class SalonsListScreen extends StatefulWidget {
 
 class _SalonsListScreenState extends State<SalonsListScreen> {
   final AdminService _adminService = AdminService();
-  String _searchQuery = '';
 
   @override
   void initState() {
@@ -42,68 +43,57 @@ class _SalonsListScreenState extends State<SalonsListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Welcome Section
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello, ${user?.name ?? "Guest"}! 👋',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Welcome Section
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, ${user?.name ?? "Guest"}! 👋',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Find your perfect salon',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Find your perfect salon',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Search salons by name or city...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            // Nearby Salons Widget
+            const NearbySalonsWidget(),
+
+            // All Salons Header
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'All Salons',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
 
-          // Salons List
-          Expanded(
-            child: StreamBuilder<List<SalonModel>>(
+            // Salons List
+            StreamBuilder<List<SalonModel>>(
               stream: _adminService.salonsStream,
               builder: (context, snapshot) {
                 // Show data immediately if available
                 if (!snapshot.hasData && _adminService.salons.isNotEmpty) {
                   var salons = _adminService.salons;
-                  if (_searchQuery.isNotEmpty) {
-                    final query = _searchQuery.toLowerCase();
-                    salons = salons.where((salon) {
-                      return salon.name.toLowerCase().contains(query) ||
-                          salon.city.toLowerCase().contains(query) ||
-                          salon.address.toLowerCase().contains(query);
-                    }).toList();
-                  }
                   return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: salons.length,
                     itemBuilder: (context, index) =>
@@ -150,23 +140,9 @@ class _SalonsListScreenState extends State<SalonsListScreen> {
 
                 var salons = snapshot.data!;
 
-                // Filter salons based on search query
-                if (_searchQuery.isNotEmpty) {
-                  final query = _searchQuery.toLowerCase();
-                  salons = salons.where((salon) {
-                    return salon.name.toLowerCase().contains(query) ||
-                        salon.city.toLowerCase().contains(query) ||
-                        salon.address.toLowerCase().contains(query);
-                  }).toList();
-                }
-
-                if (salons.isEmpty) {
-                  return const Center(
-                    child: Text('No salons match your search'),
-                  );
-                }
-
                 return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: salons.length,
                   itemBuilder: (context, index) {
@@ -176,8 +152,8 @@ class _SalonsListScreenState extends State<SalonsListScreen> {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

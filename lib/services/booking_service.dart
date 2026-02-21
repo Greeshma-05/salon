@@ -188,6 +188,59 @@ class BookingService extends ChangeNotifier {
     }
   }
 
+  /// Update approval status
+  void updateApprovalStatus(String id, String approvalStatus) {
+    final index = _appointments.indexWhere(
+      (appointment) => appointment.id == id,
+    );
+    if (index != -1) {
+      _appointments[index] = _appointments[index].copyWith(
+        approvalStatus: approvalStatus,
+        updatedAt: DateTime.now(),
+      );
+      notifyListeners();
+    }
+  }
+
+  /// Approve booking
+  bool approveBooking(String id) {
+    final appointment = getAppointmentById(id);
+    if (appointment == null) return false;
+
+    updateApprovalStatus(id, 'approved');
+    updateAppointmentStatus(id, 'confirmed');
+    return true;
+  }
+
+  /// Reject booking and free up the slot
+  bool rejectBooking(String id) {
+    final appointment = getAppointmentById(id);
+    if (appointment == null) return false;
+
+    updateApprovalStatus(id, 'rejected');
+    updateAppointmentStatus(id, 'cancelled');
+
+    // Free up stylist availability
+    if (appointment.stylistId != null) {
+      _stylistService.toggleStylistAvailability(appointment.stylistId!);
+    }
+
+    return true;
+  }
+
+  /// Get pending approval bookings
+  List<AppointmentModel> getPendingApprovalBookings() {
+    return _appointments
+        .where((appointment) => appointment.approvalStatus == 'pending')
+        .toList()
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  }
+
+  /// Get all bookings (for admin)
+  List<AppointmentModel> getAllBookings() {
+    return List.unmodifiable(_appointments);
+  }
+
   /// Clear all appointments (for testing/reset)
   void clearAllAppointments() {
     _appointments.clear();

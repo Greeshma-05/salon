@@ -20,12 +20,24 @@ class Salon extends HiveObject {
   @HiveField(4)
   List<Service> services;
 
+  @HiveField(5)
+  double? latitude;
+
+  @HiveField(6)
+  double? longitude;
+
+  // Distance in km (not persisted in Hive, calculated at runtime)
+  double? distanceKm;
+
   Salon({
     required this.id,
     required this.name,
     required this.location,
     this.rating = 0.0,
     this.services = const [],
+    this.latitude,
+    this.longitude,
+    this.distanceKm,
   });
 
   // Convert to JSON for storage
@@ -35,6 +47,8 @@ class Salon extends HiveObject {
       'name': name,
       'location': location,
       'rating': rating,
+      'latitude': latitude,
+      'longitude': longitude,
       'services': services.map((s) => s.toJson()).toList(),
     };
   }
@@ -46,8 +60,27 @@ class Salon extends HiveObject {
       name: json['name'] ?? '',
       location: json['location'] ?? '',
       rating: (json['rating'] ?? 0.0).toDouble(),
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
       services:
           (json['services'] as List<dynamic>?)
+              ?.map((s) => Service.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+
+  // Create from Firestore map
+  factory Salon.fromMap(Map<String, dynamic> map) {
+    return Salon(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      location: map['location'] ?? '',
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      latitude: (map['latitude'] as num?)?.toDouble(),
+      longitude: (map['longitude'] as num?)?.toDouble(),
+      services:
+          (map['services'] as List<dynamic>?)
               ?.map((s) => Service.fromJson(s as Map<String, dynamic>))
               .toList() ??
           [],
@@ -61,6 +94,9 @@ class Salon extends HiveObject {
     String? location,
     double? rating,
     List<Service>? services,
+    double? latitude,
+    double? longitude,
+    double? distanceKm,
   }) {
     return Salon(
       id: id ?? this.id,
@@ -68,6 +104,9 @@ class Salon extends HiveObject {
       location: location ?? this.location,
       rating: rating ?? this.rating,
       services: services ?? this.services,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      distanceKm: distanceKm ?? this.distanceKm,
     );
   }
 

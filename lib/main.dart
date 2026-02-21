@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 // Providers
 import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/language_provider.dart';
 
 // Screens
 import 'screens/auth/login_screen.dart';
@@ -14,9 +15,17 @@ import 'screens/admin/admin_home_screen.dart';
 // Services
 import 'services/hive_service.dart';
 import 'services/booking_service.dart';
-import 'services/loyalty_service.dart';
 import 'services/pricing_service.dart';
+import 'services/notification_settings_service.dart';
+import 'services/notification_service.dart';
 import 'services/random_data_generator.dart';
+import 'services/service_service.dart';
+import 'services/schedule_management_service.dart';
+import 'services/customer_management_service.dart';
+import 'services/report_service.dart';
+import 'services/payment_report_service.dart';
+import 'services/offer_service.dart';
+import 'services/analytics_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,10 +56,19 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => BookingService()),
-        ChangeNotifierProvider(create: (_) => LoyaltyService()),
         ChangeNotifierProvider(create: (_) => PricingService()),
+        ChangeNotifierProvider(create: (_) => NotificationSettingsService()),
+        ChangeNotifierProvider(create: (_) => NotificationService()),
+        ChangeNotifierProvider(create: (_) => ServiceService()),
+        ChangeNotifierProvider(create: (_) => ScheduleManagementService()),
+        ChangeNotifierProvider(create: (_) => CustomerManagementService()),
+        ChangeNotifierProvider(create: (_) => ReportService()),
+        ChangeNotifierProvider(create: (_) => PaymentReportService()),
+        ChangeNotifierProvider(create: (_) => OfferService()),
+        ChangeNotifierProvider(create: (_) => AnalyticsService()),
         // Add more providers here as needed
       ],
       child: Consumer<ThemeProvider>(

@@ -99,6 +99,9 @@ class RandomDataGenerator {
     'Lucknow',
     'Chandigarh',
     'Indore',
+    'Thiruvalla',
+    'Chengannur',
+    'Mannar',
   ];
 
   static const List<String> _streets = [
@@ -186,7 +189,54 @@ class RandomDataGenerator {
     final salons = <SalonModel>[];
     final usedNames = <String>{};
 
-    for (int i = 0; i < count; i++) {
+    // Add specific salons for Kerala cities
+    final keralaSalons = [
+      {
+        'name': 'Universal Salon',
+        'city': 'Thiruvalla',
+        'lat': 9.4163,
+        'lon': 76.6237,
+      },
+      {'name': 'Lavender', 'city': 'Chengannur', 'lat': 9.3048, 'lon': 76.7100},
+      {'name': 'Sandra', 'city': 'Mannar', 'lat': 9.2992, 'lon': 76.6828},
+    ];
+
+    int salonIndex = 1;
+
+    // Add Kerala salons first
+    for (final keralaData in keralaSalons) {
+      usedNames.add(keralaData['name'] as String);
+      final street = _streets[_random.nextInt(_streets.length)];
+
+      salons.add(
+        SalonModel(
+          id: 'salon_$salonIndex',
+          name: keralaData['name'] as String,
+          description:
+              'Premium beauty and wellness services with expert stylists. Experience luxury treatments in our modern salon.',
+          address: '${_random.nextInt(500) + 1}, $street',
+          city: keralaData['city'] as String,
+          state: _getCityState(keralaData['city'] as String),
+          zipCode: '${_random.nextInt(900000) + 100000}',
+          phone: '+91 ${_random.nextInt(9000000) + 9000000000}',
+          email:
+              '${(keralaData['name'] as String).toLowerCase().replaceAll(' ', '')}@salon.com',
+          ownerId: 'owner_$salonIndex',
+          rating: _random.nextDouble() * 1.5 + 3.8, // 3.8 to 5.0
+          totalReviews: _random.nextInt(300) + 100,
+          openingHours: _generateOpeningHours(),
+          images: [],
+          createdAt: DateTime.now().subtract(
+            Duration(days: _random.nextInt(365)),
+          ),
+          updatedAt: DateTime.now(),
+        ),
+      );
+      salonIndex++;
+    }
+
+    // Add random salons
+    for (int i = 0; i < count - keralaSalons.length; i++) {
       String name;
       do {
         name = _salonNames[_random.nextInt(_salonNames.length)];
@@ -198,7 +248,7 @@ class RandomDataGenerator {
 
       salons.add(
         SalonModel(
-          id: 'salon_${i + 1}',
+          id: 'salon_$salonIndex',
           name: name,
           description:
               'Premium ${_random.nextBool() ? "beauty" : "wellness"} services with expert stylists',
@@ -206,10 +256,10 @@ class RandomDataGenerator {
           city: city,
           state: _getCityState(city),
           zipCode: '${_random.nextInt(900000) + 100000}',
-          phone: '+91 ${_random.nextInt(900000000) + 9000000000}',
+          phone: '+91 ${_random.nextInt(9000000) + 9000000000}',
           email:
               '${name.toLowerCase().replaceAll(' ', '').replaceAll('&', '')}@salon.com',
-          ownerId: 'owner_${i + 1}',
+          ownerId: 'owner_$salonIndex',
           rating: _random.nextDouble() * 1.5 + 3.5, // 3.5 to 5.0
           totalReviews: _random.nextInt(200) + 50,
           openingHours: _generateOpeningHours(),
@@ -220,6 +270,7 @@ class RandomDataGenerator {
           updatedAt: DateTime.now(),
         ),
       );
+      salonIndex++;
     }
 
     return salons;
@@ -422,6 +473,9 @@ class RandomDataGenerator {
       'Lucknow': 'Uttar Pradesh',
       'Chandigarh': 'Chandigarh',
       'Indore': 'Madhya Pradesh',
+      'Thiruvalla': 'Kerala',
+      'Chengannur': 'Kerala',
+      'Mannar': 'Kerala',
     };
     return cityStateMap[city] ?? 'Unknown';
   }

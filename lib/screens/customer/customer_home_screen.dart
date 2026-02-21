@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../services/appointment_service.dart';
 import '../../widgets/appointment_card_widget.dart';
 import 'salons_list_screen.dart';
-import 'treatments_screen.dart';
 import 'profile_screen.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
@@ -120,7 +119,6 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen>
     if (_screens.isEmpty) {
       _screens.addAll([
         const SalonsListScreen(),
-        const TreatmentsScreen(),
         _buildAppointmentsTab(),
         const ProfileScreen(),
       ]);
@@ -140,11 +138,6 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen>
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.spa_outlined),
-            selectedIcon: Icon(Icons.spa),
-            label: 'Treatments',
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_today_outlined),

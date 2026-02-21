@@ -1,9 +1,12 @@
+import 'working_slot.dart';
+
 class Stylist {
   final String id;
   final String name;
   final String salonId;
   bool isAvailable;
   final List<String> skills;
+  final List<WorkingSlot> workingHours;
 
   Stylist({
     required this.id,
@@ -11,6 +14,7 @@ class Stylist {
     required this.salonId,
     required this.isAvailable,
     required this.skills,
+    this.workingHours = const [],
   });
 
   // Convert to JSON
@@ -21,6 +25,7 @@ class Stylist {
       'salonId': salonId,
       'isAvailable': isAvailable,
       'skills': skills,
+      'workingHours': workingHours.map((slot) => slot.toJson()).toList(),
     };
   }
 
@@ -32,6 +37,11 @@ class Stylist {
       salonId: json['salonId'] as String,
       isAvailable: json['isAvailable'] as bool,
       skills: (json['skills'] as List).cast<String>(),
+      workingHours: json['workingHours'] != null
+          ? (json['workingHours'] as List)
+                .map((slot) => WorkingSlot.fromJson(slot))
+                .toList()
+          : [],
     );
   }
 
@@ -42,6 +52,7 @@ class Stylist {
     String? salonId,
     bool? isAvailable,
     List<String>? skills,
+    List<WorkingSlot>? workingHours,
   }) {
     return Stylist(
       id: id ?? this.id,
@@ -49,6 +60,7 @@ class Stylist {
       salonId: salonId ?? this.salonId,
       isAvailable: isAvailable ?? this.isAvailable,
       skills: skills ?? this.skills,
+      workingHours: workingHours ?? this.workingHours,
     );
   }
 }

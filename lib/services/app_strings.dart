@@ -1,0 +1,88 @@
+class AppStrings {
+  // English Strings
+  static const Map<String, String> en = {
+    'home': 'Home',
+    'find_salons': 'Find Salons',
+    'appointments': 'Appointments',
+    'profile': 'Profile',
+    'salon_connect': 'Salon Connect',
+    'find_your_perfect_salon': 'Find your perfect salon',
+    'all_salons': 'All Salons',
+    'upcoming': 'Upcoming',
+    'past': 'Past',
+    'no_appointments': 'No appointments',
+    'no_upcoming_appointments': 'No upcoming appointments',
+    'no_past_appointments': 'No past appointments',
+    'hello': 'Hello',
+    'logout': 'Logout',
+    'are_you_sure': 'Are you sure you want to logout?',
+    'cancel': 'Cancel',
+    'find_nearby_salons': 'Find Nearby Salons',
+    'find_my_location': 'Find My Location',
+    'my_bookings': 'My Bookings',
+    'payment_history': 'Payment History',
+    'treatment_history': 'Treatment History',
+    'notifications': 'Notifications',
+    'dark_mode': 'Dark Mode',
+    'language': 'Language',
+    'help_support': 'Help & Support',
+    'privacy_policy': 'Privacy Policy',
+    'terms_of_service': 'Terms of Service',
+    'personal_information': 'Personal Information',
+    'settings': 'Settings',
+    'support': 'Support',
+    'full_name': 'Full Name',
+    'email': 'Email',
+    'phone': 'Phone',
+    'account_type': 'Account Type',
+    'salon_admin': 'Salon Admin',
+    'customer': 'Customer',
+  };
+
+  // Malayalam Strings
+  static const Map<String, String> ml = {
+    'home': 'ഹോം',
+    'find_salons': 'സലൂനുകൾ കണ്ടെത്തുക',
+    'appointments': 'നിയമിത സമയങ്ങൾ',
+    'profile': 'പ്രൊഫൈൽ',
+    'salon_connect': 'സലൂൻ കണക്ട്',
+    'find_your_perfect_salon': 'നിങ്ങളുടെ പരിപൂർണ്ണ സലൂൻ കണ്ടെത്തുക',
+    'all_salons': 'എല്ലാ സലൂനുകൾ',
+    'upcoming': 'വരാനിരിക്കുന്നവ',
+    'past': 'കഴിഞ്ഞ',
+    'no_appointments': 'നിയമിത സമയങ്ങൾ ഇല്ല',
+    'no_upcoming_appointments': 'വരാനിരിക്കുന്ന നിയമിത സമയങ്ങൾ ഇല്ല',
+    'no_past_appointments': 'കഴിഞ്ഞ നിയമിത സമയങ്ങൾ ഇല്ല',
+    'hello': 'ഹലോ',
+    'logout': 'പുറത്തോട്ട് പോകുക',
+    'are_you_sure': 'നിങ്ങൾ പുറത്തോട്ട് പോകാൻ പ്രതിശ്രുതിച്ചിട്ടുണ്ടോ?',
+    'cancel': 'റദ്ദാക്കുക',
+    'find_nearby_salons': 'അടുത്തുള്ള സലൂനുകൾ കണ്ടെത്തുക',
+    'find_my_location': 'എന്റെ സ്ഥാനം കണ്ടെത്തുക',
+    'my_bookings': 'എന്റെ ബുക്കിംഗുകൾ',
+    'payment_history': 'പേയ്‌മെന്റ് ചരിത്രം',
+    'treatment_history': 'ചികിത്സ ചരിത്രം',
+    'notifications': 'അറിയിപ്പുകൾ',
+    'dark_mode': 'ഇരുണ്ട മോഡ്',
+    'language': 'ഭാഷ',
+    'help_support': 'സഹായം ഓപ്ഷൻ',
+    'privacy_policy': 'സ്വകാര്യതാ നയം',
+    'terms_of_service': 'സേവന വ്യവസ്ഥകൾ',
+    'personal_information': 'വ്യക്തിഗത വിവരങ്ങൾ',
+    'settings': 'സജ്ജീകരണങ്ങൾ',
+    'support': 'സഹായം',
+    'full_name': 'പൂർണ്ണ നാമം',
+    'email': 'ഇമെയിൽ',
+    'phone': 'ഫോൺ',
+    'account_type': 'അക്കൗണ്ട് തരം',
+    'salon_admin': 'സലൂൻ അഡ്മിൻ',
+    'customer': 'ഉപയോക്താവ്',
+  };
+
+  static String getString(String locale, String key) {
+    if (locale == 'ml') {
+      return ml[key] ?? en[key] ?? key;
+    }
+    return en[key] ?? key;
+  }
+}

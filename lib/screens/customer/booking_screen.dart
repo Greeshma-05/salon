@@ -5,12 +5,16 @@ import '../../models/salon_model.dart';
 import '../../models/service_model.dart';
 import '../../models/stylist_model.dart';
 import '../../models/appointment_model.dart';
+import '../../models/app_notification.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/admin_service.dart';
 import '../../services/booking_service.dart';
 import '../../services/pricing_service.dart';
+import '../../services/notification_service.dart';
+import '../../services/notification_settings_service.dart';
+import '../../services/schedule_management_service.dart';
+import '../../services/offer_service.dart';
 import '../../widgets/dynamic_price_display.dart';
-import 'payment_screen.dart';
 
 class BookingScreen extends StatefulWidget {
   final SalonModel salon;
@@ -112,6 +116,30 @@ class _BookingScreenState extends State<BookingScreen> {
       return;
     }
 
+    // Check if stylist is available (working hours and not on leave)
+    final scheduleService = Provider.of<ScheduleManagementService>(
+      context,
+      listen: false,
+    );
+
+    if (!scheduleService.canAcceptBooking(
+      _selectedStylist!.id,
+      _selectedDate!,
+      _selectedTimeSlot!,
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            '⚠️ Stylist is not available at this time. Please select another time slot.',
+          ),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      _loadAvailableTimeSlots();
+      return;
+    }
+
     // Check slot availability before booking
     if (!bookingService.checkSlotAvailability(
       _selectedStylist!.id,
@@ -147,6 +175,13 @@ class _BookingScreenState extends State<BookingScreen> {
         bookingDate: _selectedDate,
       );
 
+      // Apply offer discount if available
+      final offerService = Provider.of<OfferService>(context, listen: false);
+      final finalPrice = offerService.calculateDiscountedPrice(
+        pricing.adjustedPrice,
+        widget.service.name,
+      );
+
       // Create appointment
       final appointment = AppointmentModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -163,7 +198,7 @@ class _BookingScreenState extends State<BookingScreen> {
         appointmentDate: _selectedDate!,
         timeSlot: _selectedTimeSlot!,
         duration: widget.service.duration,
-        totalPrice: pricing.adjustedPrice,
+        totalPrice: finalPrice, // Use discounted price if offer applies
         status: 'pending',
         paymentStatus: 'unpaid',
         notes: _notesController.text.trim(),
@@ -195,13 +230,39 @@ class _BookingScreenState extends State<BookingScreen> {
         return;
       }
 
+      // Schedule appointment reminders
+      final notificationService = Provider.of<NotificationService>(
+        context,
+        listen: false,
+      );
+      final notificationSettingsService =
+          Provider.of<NotificationSettingsService>(context, listen: false);
+      notificationService.scheduleAppointmentReminders(
+        appointment,
+        notificationSettingsService,
+      );
+
+      // Send booking confirmation notification (pending approval)
+      notificationService.addNotification(
+        title: 'Booking Submitted!',
+        message:
+            'Your booking for ${appointment.serviceName} is pending approval. You will be notified once confirmed.',
+        appointmentId: appointment.id,
+        type: NotificationType.booking,
+      );
+
       if (mounted) {
-        // Navigate to payment screen
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PaymentScreen(appointment: appointment),
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Booking submitted! Waiting for admin approval.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
           ),
         );
+
+        // Navigate back or to payment screen after approval
+        Navigator.of(context).pop();
       }
     } catch (e) {
       setState(() {
@@ -255,18 +316,143 @@ class _BookingScreenState extends State<BookingScreen> {
                     const SizedBox(height: 12),
                     const Divider(),
                     const SizedBox(height: 8),
-                    Consumer<PricingService>(
-                      builder: (context, pricingService, _) {
+                    Consumer2<PricingService, OfferService>(
+                      builder: (context, pricingService, offerService, _) {
                         final pricing = pricingService.getDynamicPrice(
                           serviceId: widget.service.id,
                           serviceName: widget.service.name,
                           basePrice: widget.service.price,
                           bookingDate: _selectedDate,
                         );
-                        return DynamicPriceDisplay(
-                          pricing: pricing,
-                          showDetails: true,
-                          compact: false,
+
+                        // Check for available offers
+                        final offer = offerService.getBestOfferForService(
+                          widget.service.name,
+                        );
+                        final hasOffer = offer != null;
+                        final finalPrice = hasOffer
+                            ? offerService.calculateDiscountedPrice(
+                                pricing.adjustedPrice,
+                                widget.service.name,
+                              )
+                            : pricing.adjustedPrice;
+                        final discountAmount = hasOffer
+                            ? offerService.getDiscountAmount(
+                                pricing.adjustedPrice,
+                                widget.service.name,
+                              )
+                            : 0.0;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DynamicPriceDisplay(
+                              pricing: pricing,
+                              showDetails: true,
+                              compact: false,
+                            ),
+                            if (hasOffer) ...[
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.green.shade200,
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.local_offer,
+                                          color: Colors.green.shade700,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            offer.title,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green.shade900,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '${offer.discountPercent.toStringAsFixed(0)}% OFF',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Discount:',
+                                          style: TextStyle(
+                                            color: Colors.grey[700],
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        Text(
+                                          '-\$${discountAmount.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            color: Colors.green.shade700,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Final Price:',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          '\$${finalPrice.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: Colors.green.shade700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
                         );
                       },
                     ),

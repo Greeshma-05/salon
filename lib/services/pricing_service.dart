@@ -156,11 +156,11 @@ class PricingResult {
 
   bool get hasSurcharge => adjustedPrice > basePrice;
 
-  String get formattedBasePrice => '\$${basePrice.toStringAsFixed(2)}';
+  String get formattedBasePrice => '₹${basePrice.toStringAsFixed(2)}';
 
-  String get formattedAdjustedPrice => '\$${adjustedPrice.toStringAsFixed(2)}';
+  String get formattedAdjustedPrice => '₹${adjustedPrice.toStringAsFixed(2)}';
 
-  String get formattedSavings => '\$${savingsAmount.abs().toStringAsFixed(2)}';
+  String get formattedSavings => '₹${savingsAmount.abs().toStringAsFixed(2)}';
 
   String get priceChangeLabel {
     if (hasDiscount) {

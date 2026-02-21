@@ -7,6 +7,7 @@ class UserModel {
   final DateTime createdAt;
   final String? profileImage;
   final int loyaltyPoints;
+  final String? address;
 
   UserModel({
     required this.uid,
@@ -17,6 +18,7 @@ class UserModel {
     required this.createdAt,
     this.profileImage,
     this.loyaltyPoints = 0,
+    this.address,
   });
 
   // Convert UserModel to Map for Firestore
@@ -28,6 +30,7 @@ class UserModel {
       'phone': phone,
       'role': role,
       'createdAt': createdAt.toIso8601String(),
+      'address': address,
       'profileImage': profileImage,
       'loyaltyPoints': loyaltyPoints,
     };
@@ -43,6 +46,7 @@ class UserModel {
       role: map['role'] ?? 'customer',
       createdAt: DateTime.parse(map['createdAt']),
       profileImage: map['profileImage'],
+      address: map['address'],
       loyaltyPoints: map['loyaltyPoints'] ?? 0,
     );
   }
@@ -56,6 +60,7 @@ class UserModel {
     DateTime? createdAt,
     String? profileImage,
     int? loyaltyPoints,
+    String? address,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -66,6 +71,7 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
       profileImage: profileImage ?? this.profileImage,
       loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
+      address: address ?? this.address,
     );
   }
 }
