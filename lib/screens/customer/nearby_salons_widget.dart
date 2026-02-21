@@ -34,7 +34,7 @@ class _NearbySalonsWidgetState extends State<NearbySalonsWidget> {
 
     try {
       var position = await _locationService.getCurrentLocation();
-      
+
       // If GPS fails, use Thiruvalla as default location
       if (position == null) {
         // Thiruvalla coordinates as default
@@ -43,12 +43,13 @@ class _NearbySalonsWidgetState extends State<NearbySalonsWidget> {
           longitude: 76.6237,
           radiusKm: _radiusKm,
         );
-        
+
         setState(() {
           _nearbySalons = salons;
           _isLoading = false;
           if (_nearbySalons.isEmpty) {
-            _errorMessage = 'Using default location (Thiruvalla). Tap "Detect Location" to use your actual location.';
+            _errorMessage =
+                'Using default location (Thiruvalla). Tap "Detect Location" to use your actual location.';
           }
         });
       } else {
@@ -488,7 +489,8 @@ class _NearbySalonsWidgetState extends State<NearbySalonsWidget> {
                               salon: SalonModel(
                                 id: salon.id,
                                 name: salon.name,
-                                description: 'Premium beauty and wellness services',
+                                description:
+                                    'Premium beauty and wellness services',
                                 address: salon.location,
                                 city: '',
                                 state: '',
@@ -522,7 +524,10 @@ class _NearbySalonsWidgetState extends State<NearbySalonsWidget> {
                         );
                       },
                       icon: const Icon(Icons.payment, size: 16),
-                      label: const Text('Payment', style: TextStyle(fontSize: 12)),
+                      label: const Text(
+                        'Payment',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
                   ),
                 ],
