@@ -106,7 +106,8 @@ flutter run
 
 ## System Architecture
 
-![Architecture Diagram](docs/architecture.png)
+<img width="716" height="1020" alt="image" src="https://github.com/user-attachments/assets/7ae67eb2-e719-40f7-9963-f6420a176a38" />
+
 Salon Connect follows a structured architecture:
 
 * UI Layer (Flutter Screens)
@@ -120,7 +121,7 @@ Data flows from UI → Service Layer → Local Storage → UI update.
 
 ## Application Workflow
 
-![Workflow](docs/workflow.png)
+<img width="716" height="1016" alt="image" src="https://github.com/user-attachments/assets/294881ce-602b-46a0-8f93-b5671570f569" />
 
 User Flow:
 
